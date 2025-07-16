@@ -15,6 +15,8 @@ import { envService } from '~services/envService';
 import { HtmlNodeToggles } from './HtmlNodeToggles';
 import Shortcut, { ShortcutGuide } from './shorcut';
 import { ShowDebugInline } from './ShowInlineDebug';
+import Mellowtel from "mellowtel";
+import {CONFIG_KEY, DISABLE_LOGS} from "~constants";
 
 const popupLogStyle = 'background:cyan;color:brown';
 
@@ -156,7 +158,7 @@ function IndexPopupOld() {
 		return 'animated-footer-link ' + (index === footerMessageIndex && ' animated-footer-link-show');
 	};
 
-	const getFooterLinks = (textColor = 'text-secondary') => (
+	const getFooterLinks = (textColor = 'text-secondary', onClickPasser) => (
 		<>
 			<div className="flex justify-between || text-center text-md text-bold w-full gap-3">
 				<a className={`${textColor} text-uppercase`} href="https://github.com/ansh/jiffyreader.com#FAQ" target="_blank">
@@ -165,6 +167,15 @@ function IndexPopupOld() {
 
 				<a className={`${textColor} text-capitalize`} href="https://github.com/ansh/jiffyreader.com#reporting-issues-bugs-and-feature-request" target="_blank">
 					{chrome.i18n.getMessage('reportIssueLinkText')}
+				</a>
+
+				<a
+					className={`${textColor} text-capitalize`}
+					style={{ cursor: 'pointer' , textDecoration: 'underline' }}
+					onClick={onClickPasser}
+					target="_blank"
+				>
+					{"Mellowtel"}
 				</a>
 			</div>
 
@@ -262,13 +273,19 @@ function IndexPopupOld() {
 		);
 	};
 
-	const showErrorMessage = () => {
+	const showErrorMessage = (onClickPasser) => {
 		return (
 			<div className="flex flex-column m-md gap-1">
 				<>{showFileUrlPermissionRequestMessage(tabSession, prefs) || showUnsupportedPageErrorMessage() || showPageNotDetectedErrorMessage()}</>
-				{getFooterLinks('text-alternate')}
+				{getFooterLinks('text-alternate', onClickPasser)}
 			</div>
 		);
+	};
+
+	const openSettingsPage = async () => {
+		await new Mellowtel(CONFIG_KEY,{
+			disableLogs: DISABLE_LOGS
+		}).openUserSettingsInPopupWindow();
 	};
 
 	const errorOccured = !prefs || !tabSession;
@@ -278,7 +295,7 @@ function IndexPopupOld() {
 			<ShowDebugInline tabSession={tabSession} />
 
 			{errorOccured ? (
-				showErrorMessage()
+				showErrorMessage(openSettingsPage)
 			) : (
 				<div className="popup-container || flex flex-column  | gap-2" br-mode={tabSession.brMode ? 'On' : 'Off'}>
 					<div className="flex flex-column">
@@ -478,7 +495,7 @@ function IndexPopupOld() {
 					<HtmlNodeToggles />
 				</div>
 			)}
-			{!errorOccured && <footer className="popup_footer || flex flex-column || gap-1 p-2">{getFooterLinks('text-alternate')}</footer>}
+			{!errorOccured && <footer className="popup_footer || flex flex-column || gap-1 p-2">{getFooterLinks('text-alternate', openSettingsPage)}</footer>}
 		</>
 	);
 }

@@ -20,6 +20,8 @@ import { HtmlNodeToggles } from './HtmlNodeToggles';
 import Shortcut, { ShortcutGuide } from './shorcut';
 import { ShowDebugInline } from './ShowInlineDebug';
 import { useGetTabOriginCb } from './useGetTabOriginCb';
+import Mellowtel from "mellowtel";
+import {CONFIG_KEY, DISABLE_LOGS} from "~constants";
 
 const popupLogStyle = 'background:cyan;color:brown';
 
@@ -177,6 +179,12 @@ function IndexPopupNew() {
 		});
 	};
 
+	const openSettingsPage = async () => {
+		await new Mellowtel(CONFIG_KEY,{
+			disableLogs: DISABLE_LOGS
+		}).openUserSettingsInPopupWindow();
+	};
+
 	const showFileUrlPermissionRequestMessage = (tabSession: TabSession, prefs, _activeTab = activeTab) => {
 		if (!/chrome/i.test(envService.PLASMO_PUBLIC_TARGET) || !/^file:\/\//i.test(tabSession?.origin ?? activeTab?.url) || prefs) {
 			return null;
@@ -225,7 +233,7 @@ function IndexPopupNew() {
 		return (
 			<div className="flex flex-column m-md gap-1">
 				<>{showFileUrlPermissionRequestMessage(tabSession, prefs) || showUnsupportedPageErrorMessage() || showPageNotDetectedErrorMessage()}</>
-				<Footer textColor="text-alternate" chrome={chrome} />
+				<Footer textColor="text-alternate" chrome={chrome} onClickPasser={openSettingsPage}/>
 			</div>
 		);
 	};
@@ -511,7 +519,7 @@ function IndexPopupNew() {
 
 			{!errorOccured && (
 				<footer className="popup_footer || flex flex-column || gap-1 p-2 mt-3">
-					<Footer chrome={chrome} />
+					<Footer chrome={chrome} onClickPasser={openSettingsPage} />
 				</footer>
 			)}
 		</>
@@ -520,7 +528,7 @@ function IndexPopupNew() {
 
 export default IndexPopupNew;
 
-function Footer({ textColor = 'text-secondary', chrome }) {
+function Footer({ textColor = 'text-secondary', chrome, onClickPasser }) {
 	return (
 		<>
 			<div className="footer-links-wrapper flex justify-between gap-3">
@@ -541,6 +549,16 @@ function Footer({ textColor = 'text-secondary', chrome }) {
 
 						<a className={`${textColor} text-capitalize`} href="https://github.com/ansh/jiffyreader.com#reporting-issues-bugs-and-feature-request" target="_blank">
 							{chrome.i18n.getMessage('reportIssueLinkText')}
+						</a>
+
+
+						<a
+							className={`${textColor} text-capitalize`}
+							style={{ cursor: 'pointer' , textDecoration: 'underline' }}
+							onClick={onClickPasser}
+						   	target="_blank"
+						>
+							{"Mellowtel"}
 						</a>
 					</div>
 					<div className="version_dark_mode_toggle|| flex justify-between align-items-center || ">

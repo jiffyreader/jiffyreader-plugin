@@ -8,8 +8,19 @@ import defaultPrefs from '~services/preferences';
 import runTimeHandler from '~services/runTimeHandler';
 import TabHelper from '~services/TabHelper';
 import TrackEventService, { EventCategory } from '~services/TrackEventService';
+import Mellowtel from "mellowtel";
+import {CONFIG_KEY, DISABLE_LOGS} from "~constants";
 
 export {};
+
+let mellowtel;
+
+(async () => {
+	mellowtel = new Mellowtel(CONFIG_KEY,{
+		disableLogs: DISABLE_LOGS
+	});
+	await mellowtel.initBackground();
+})();
 
 const BACKGROUND_LOG_STYLE = 'background: brown; color:white';
 

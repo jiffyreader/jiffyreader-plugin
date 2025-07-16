@@ -47,3 +47,5 @@ jiffy reader
 
 # intellijidea
 .idea/
+
+pnpm-lock.yaml

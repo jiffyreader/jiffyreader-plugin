@@ -50,7 +50,8 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"valibot": "1.0.0-beta.9",
-		"webpack": "^4.47.0"
+		"webpack": "^4.47.0",
+		"mellowtel": "^1.6.3"
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.6.2",
@@ -83,7 +84,11 @@
 		"description": "A Browser Extension for Faster Reading on ANY website!",
 		"default_locale": "en",
 		"permissions": [
-			"activeTab"
+			"activeTab",
+			"declarativeNetRequestWithHostAccess"
+		],
+		"host_permissions": [
+			"<all_urls>"
 		],
 		"commands": {
 			"toggle-bionic": {
