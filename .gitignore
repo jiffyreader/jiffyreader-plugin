@@ -49,3 +49,5 @@ jiffy reader
 .idea/
 
 pnpm-lock.yaml
+
+package-lock.json
